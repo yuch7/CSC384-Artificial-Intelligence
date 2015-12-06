@@ -1,15 +1,25 @@
 from cspbase import *
 import sys
 
-def nonogram_csp(initial_board):
+
+def nonogram_csp_model(initial_board):
     """
     Return a CSP object representing a nonogram CSP problem along with
     an array of Variables for the problem. That is, return
 
     nonogram_csp, variable_array
     """
-    width = len(initial_board[0])
-    height = len(intiail_board[1])
+
+    nonogram_csp, variable_array = construct_base_csp(initial_board)
+
+    for row in varialbe_array:
+        pass
+
+    transpose = list(map(list, zip(*variable_array)))
+    for row in transpose:
+        pass
+
+    return (nonogram_csp, variable_array)
 
 if __name__=="__main__":
 	if (len(sys.argv) != 2):
