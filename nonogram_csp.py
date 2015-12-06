@@ -1,16 +1,36 @@
 from cspbase import *
 import sys
 
-# def nonogram_csp():
+def nonogram_csp(c):
+	board = []
+	for i in range(len(c[0])):
+		board.append([])
+		for j in range(len(c[1])):
+			board.append([])
+			board[i][j] = Variable("{}{}".format(i, j), [0,1])
+
+ 	lcsp = []
 
 
-if __name__=="__main__":
-	if (len(sys.argv) != 2):
-		print("Usage: python3 nonogram_csp <filename>")
-		sys.exit()
 
-	tosolve = open(sys.argv[1], "r")
+
+def nonogram_parse(filename):
+	H = []
+	V = []
+
+	tosolve = open(filename, "r")
 	line = tosolve.readline()
-	if (line != "H"):
+	print(line)
+	if (line != 'H'):
 		print("Invalid file!")
 		sys.exit()
+
+	while (line != "V"):
+		line = tosolve.readline()
+		H.append(line.split())
+	while (line != ''):
+		line = tosolve.readline()
+		V.append(line.split())
+
+	tosolve.close()
+	return (H, V)
