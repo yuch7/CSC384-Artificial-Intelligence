@@ -1,4 +1,5 @@
 from nonograms import solve_nonogram
+from nonograms import parse_nonogram
 
 
 def test_nonograms(test_file):
@@ -13,7 +14,8 @@ def test_nonograms(test_file):
         for line in f:
             files.append(line)
 
-    for instance in files:
+    for text in files:
+        instance = parse_nonogram(text)
         solve_nonogram(instance)
 
 if __name__ == "__main__":
