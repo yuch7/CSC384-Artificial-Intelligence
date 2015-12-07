@@ -2,7 +2,7 @@ from cspbase import *
 import sys
 
 
-def nonogram_csp_model(initial_board):
+def nonogram_csp_model(c):
     """
     Return a CSP object representing a nonogram CSP problem along with
     an array of Variables for the problem. That is, return
@@ -101,4 +101,3 @@ if __name__ == "__main__":
 
     nonogram_name = sys.argv[1]
     nonogram_parse(nonogram_name)
-    # TODO: solve
