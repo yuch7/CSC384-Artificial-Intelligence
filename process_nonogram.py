@@ -4,7 +4,13 @@ from display_nonogram import *
 
 
 def solve_nonogram(nono):
+    """
+    Take a Nonograph input and generate a model based on the info.
+    Then,use backtracking search to solve the CSP. Display the solution
+    to a Window with tiles.
 
+    nono: tuple of form (row_constraints, column_constraints)
+    """
     print("Using nonogram model:")
     csp, var_array = nonogram_csp_model(nono)
     solver = BT(csp)
