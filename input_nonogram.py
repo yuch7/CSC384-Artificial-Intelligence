@@ -1,12 +1,14 @@
 
 from tkinter import *
+from process_nonogram import *
 from tkinter import messagebox
 fields = ('# Rows', '# Columns', 'Row Constraints',
           'Column Constraints', "File Name")
 
 
-def generate_nonogram(entries):
+def extract_nonogram_info(entries):
 
+    # get info from nonogram
     n_rows = int(entries["# Rows"].get())
     n_columns = int(entries["# Columns"].get())
     row_constraints = entries["Row Constraints"].get().split("|")
@@ -53,9 +55,9 @@ if __name__ == '__main__':
     root = Tk()
     root.wm_title("Generate Nonogram")
     ents = makeform(root, fields)
-    root.bind('<Return>', (lambda event, e=ents: fetch(e)))
+    root.bind('<Return>', (lambda event, e=ents: extract_nonogram_info(e)))
     b1 = Button(root, text='Generate',
-                command=(lambda e=ents: generate_nonogram(e)))
+                command=(lambda e=ents: extract_nonogram_info(e)))
     b1.pack(side=LEFT, padx=35, pady=5)
     b3 = Button(root, text='Quit', command=root.quit)
     b3.pack(side=RIGHT, padx=35, pady=5)

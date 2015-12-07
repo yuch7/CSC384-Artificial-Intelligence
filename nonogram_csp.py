@@ -31,7 +31,7 @@ def nonogram_csp_model(initial_board):
         nonogram_csp.add_constraint(c)
 
     for i in range(len(board[0])):
-        var = [ x[i] for x in board ]
+        var = [x[i] for x in board]
         sat_tuples = get_sat_tuples(len(var), initial_board[1][i])
         c = Constraint("col{}".format(i), var)
         c.add_satisfying_tuples(sat_tuples)
@@ -39,32 +39,6 @@ def nonogram_csp_model(initial_board):
 
     return nonogram_csp, board
 
-def nonogram_parse(filename):
-    """
-    Take a specific filename as input, and then parse the
-    file in order to produce an initial nonogram form. Assumes
-    that the file is a valid nonogram file.
-
-    Returns a tuple of the form (list, list).
-    """
-    rows = []
-    columns = []
-
-    with open(filename) as f:
-        check = f.readline()
-        if check.strip() != "H":
-            print("Invalid file")
-            sys.exit()
-        for line in f:
-            line = line.strip()
-            if line == "V":
-                break
-            rows.append([int(n) for n in line.split()])
-        for line in f:
-            line = line.strip()
-            columns.append([int(n) for n in line.split()])
-
-    return (rows, columns)
 
 def get_sat_tuples(space, nums, used=[]):
     ret = []
@@ -96,10 +70,10 @@ def get_sat_tuples(space, nums, used=[]):
                 ret.append(z)
         return ret
 
-# if __name__ == "__main__":
-#     if (len(sys.argv) != 2):
-#         print("Usage: python3 nonogram_csp <filename>")
-#         sys.exit()
+if __name__ == "__main__":
+    if (len(sys.argv) != 2):
+        print("Usage: python3 nonogram_csp <filename>")
+        sys.exit()
 
-#     nonogram_name = sys.argv[1]
-#     nonogram_parse(nonogram_name)
+    nonogram_name = sys.argv[1]
+    nonogram_parse(nonogram_name)
