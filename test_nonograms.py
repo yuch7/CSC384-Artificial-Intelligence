@@ -9,7 +9,7 @@ def solve_nonogram(nono):
     solver = BT(csp)
     print("=======================================================")
     print("GAC")
-    solver.bt_search(prop_GAC)
+    solver.bt_search(prop_BT)
     print("Solution")
     print_nonogram_soln(var_array)
 
