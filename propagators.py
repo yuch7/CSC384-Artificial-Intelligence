@@ -165,7 +165,7 @@ def prop_GAC(csp, newVar=None):
                         return (False, pruned)
 
                     new_constraints = [
-                        x for x in csp.get_cons_with_var(V) if x not in GACQueue and x is not C]
+                        x for x in csp.get_cons_with_var(V) if x not in GACQueue]
                     GACQueue.extend(new_constraints)
 
     return (True, pruned)
