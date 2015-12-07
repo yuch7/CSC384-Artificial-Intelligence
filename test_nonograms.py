@@ -11,7 +11,12 @@ def solve_nonogram(nono):
     print("GAC")
     solver.bt_search(prop_GAC)
     print("Solution")
-    print_sudo_soln(var_array)
+    print_nonogram_soln(var_array)
+
+
+def print_nonogram_soln(var_array):
+    for row in var_array:
+        print([var.get_assigned_value() for var in row])
 
 
 def test_nonograms(test_file):
