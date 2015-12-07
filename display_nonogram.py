@@ -1,27 +1,40 @@
 from tkinter import Tk, Canvas
 
 
-class Display(Tk):
+class NonogramDisplay(Tk):
+
+    """
+    Class used to create instance of a visual nonogram. The class
+    creates a new Window and populates a grid with black or white
+    squares depending on a nanogram solution.
+    """
+
+    LARGER_SIZE = 600
 
     def __init__(self, board, *args, **kwargs):
 
         Tk.__init__(self, *args, **kwargs)
 
-        canvas_width = 600
-        canvas_height = 600
+        # dynamically set the size of each square based on cols and rows
+        n_columns = len(board[0])
+        n_rows = len(board)
 
-        divide =
+        divide = max(n_columns, n_rows)
+        max_size = self.LARGER_SIZE / divide
+        canvas_width = max_size * n_columns
+        canvas_height = max_size * n_rows
+
+        # create the intiial canvas with rows and columns grid
         self.canvas = Canvas(
             self, width=canvas_width, height=canvas_height,
             borderwidth=0, highlightthickness=0)
         self.title("Nonogram Display")
         self.canvas.pack(side="top", fill="both", expand="true")
 
-        # dynamically create the different lengths for rows and columns
         self.rows = len(board)
         self.columns = len(board[0])
-        self.cell_width = canvas_width / self.columns
-        self.cell_height = canvas_height / self.rows
+        self.cell_width = max_size
+        self.cell_height = max_size
 
         self.rect = {}
         self.oval = {}
@@ -38,48 +51,26 @@ class Display(Tk):
                 # set the tile to black if it's a solution tile
                 if board[row][column] == 1:
                     self.rect[row, column] = self.canvas.create_rectangle(
-                        x1, y1, x2, y2, fill="black", tags="rect")
+                        x1, y1, x2, y2, fill="black")
                 else:
                     self.rect[row, column] = self.canvas.create_rectangle(
-                        x1, y1, x2, y2, fill="white", tags="rect")
-
-
-def determine_max_square_size(n_rows, n_columns):
-    """
-    Given an m x n rectangle, we need to fill it with k squares.
-    The function determines the optimal size (largest) that can fit
-    into the rectangle.
-    """
-    h = 1
-    w = 1
-    max_squares = 1
-    size = min(n_rows, n_columns)
-    while (n_rows * n_columns) > max_squares:
-        if n_rows / (h + 1) >= n_columns / (w + 1):
-            h += 1
-        else:
-            w += 1
-        max_squares = h * w
-        size = min(n_rows / h, n_columns / w)
-
-    return size
+                        x1, y1, x2, y2, fill="white")
 
 
 def display_board(board):
     """
     Takes in a final nonogram board, and creates the visual
-    representation of the board using Display. A value of one inside
-    of our nonogram representation means that the associated
-    tile is colored.
+    representation of the board using NonogramDisplay.
+    A value of one inside of our nonogram representation
+    means that the associated tile is colored.
 
-    board: a list of lists
+    board: a list of lists (each list is a row)
 
     example:
-    >>> display_board([[0, 1, 0], [1, 1, 0], [1, 0, 0]])
+    >>> display_board([[0, 1, 0],
+                       [1, 1, 0],
+                       [1, 0, 0]])
 
     """
-    app = Display(board)
+    app = NonogramDisplay(board)
     app.mainloop()
-
-# print(determine_max_square_size(100, 100))
-display_board([[0, 1, 0, 1], [1, 1, 0, 0], [1, 0, 0, 1]])
