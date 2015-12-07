@@ -17,12 +17,12 @@ def nonogram_csp_model(c):
             board[i].append([])
             newvar = Variable("{}{}".format(i, j), [0, 1])
             board[i][j] = newvar
-            lscp.append(newvar)
+            lcsp.append(newvar)
 
     nonogram_csp = CSP("Nonogram", lcsp)
 
     for i in range(len(c[0])):
-        for j in range(len(i)):
+        for j in range(i):
             sat_tuples = []
             l = sum(c[0][i][:j]) + len(c[0][i][:j])
             r = sum(c[0][i][j + 1:]) + len(c[0][i][j + 1:])
@@ -33,9 +33,9 @@ def nonogram_csp_model(c):
             nonogram_csp.add_constraint(c)
 
     for i in range(len(c[1])):
-        for j in range(len(i)):
+        for j in range(i):
             sat_tuples = []
-            l = sum(c[1][:i][j]) + len(c[1][i][:j])
+            l = sum(c[1][i][:j]) + len(c[1][i][:j])
             r = sum(c[1][i][j + 1:]) + len(c[1][i][j + 1:])
             var = [w[j] for w in board[l:-r]]
             sat_tuples = get_sat_tuples(len(var), c[1][i][j])
@@ -58,13 +58,18 @@ def nonogram_parse(filename):
     columns = []
 
     with open(filename) as f:
-
+        check = f.readline()
+        if check.strip() != "H":
+            print("Invalid file")
+            sys.exit()
         for line in f:
-            rows.append(line.split())
+            line = line.strip()
             if line == "V":
                 break
+            rows.append([int(n) for n in line.split()])
         for line in f:
-            columns.append(line.split())
+            line = line.strip()
+            columns.append([int(n) for n in line.split()])
 
     return (rows, columns)
 
