@@ -1,4 +1,5 @@
 from cspbase import *
+from copy import deepcopy
 import sys
 
 
@@ -22,41 +23,21 @@ def nonogram_csp_model(initial_board):
 
     nonogram_csp = CSP("Nonogram", lcsp)
 
-    for i in range(len(initial_board[0])):
-        for j in range(len(initial_board[0][i])):
-            sat_tuples = []
-            l = sum(initial_board[0][i][:j]) + len(initial_board[0][i][:j])
-            r = sum(initial_board[0][i][j+1:]) + len(initial_board[0][i][j+1:])
-            if r == 0:
-                var = board[i][l:]
-            else:
-                var = board[i][l:-r]
-            sat_tuples = get_sat_tuples(len(var), initial_board[0][i][j])
-            # print(var)
-            # print(sat_tuples)
-            c = Constraint("row{} consecutive: {}".format(i, initial_board[0][i][j]), var)
-            c.add_satisfying_tuples(sat_tuples)
-            nonogram_csp.add_constraint(c)
+    for i in range(len(board)):
+        var = board[i]
+        sat_tuples = get_sat_tuples(len(var), initial_board[0][i])
+        c = Constraint("row{}".format(i), var)
+        c.add_satisfying_tuples(sat_tuples)
+        nonogram_csp.add_constraint(c)
 
-    for i in range(len(initial_board[1])):
-        for j in range(len(initial_board[1][i])):
-            sat_tuples = []
-            l = sum(initial_board[1][i][:j]) + len(initial_board[1][i][:j])
-            r = sum(initial_board[1][i][j+1:]) + len(initial_board[1][i][j+1:])
-            if r == 0:
-                var = [ w[i] for w in board[l:] ]
-            else:    
-                var = [ w[i] for w in board[l:-r] ]
-            sat_tuples = get_sat_tuples(len(var), initial_board[1][i][j])
-            # print(var)
-            # print(sat_tuples)
-            c = Constraint("col{} consecutive: {}".format(i, initial_board[1][i][j]), var)
-            c.add_satisfying_tuples(sat_tuples)
-            nonogram_csp.add_constraint(c)
-
+    for i in range(len(board[0])):
+        var = [ x[i] for x in board ]
+        sat_tuples = get_sat_tuples(len(var), initial_board[1][i])
+        c = Constraint("col{}".format(i), var)
+        c.add_satisfying_tuples(sat_tuples)
+        nonogram_csp.add_constraint(c)
 
     return nonogram_csp, board
-
 
 def nonogram_parse(filename):
     """
@@ -85,36 +66,40 @@ def nonogram_parse(filename):
 
     return (rows, columns)
 
-def get_sat_tuples(space, num):
-    sat = []
-    if (space == num):
-        return [[1 for x in range(num)]]
-    if (space < num):
-        print("Error! Invalid file.")
-        sys.exit()
-    for i in range(space - num + 1):
-        sat.append(get_sat_tuple_help(space, num, i))
-    return sat
+def get_sat_tuples(space, nums, used=[]):
+    ret = []
+    if (len(nums) == 1):
+        for x in range(space - nums[0] + 1):
+            used1 = deepcopy(used)
+            count = 0
+            for y in range(space):
+                if (x <= y and count < nums[0]):
+                    used1.append(1)
+                    count += 1
+                else:
+                    used1.append(0)
+            ret.append(used1)
+        return ret
+    else:
+        tmpspace = space - sum(nums[1:]) + len(nums[1:])
+        for x in range(tmpspace - nums[0] + 1):
+            used1 = deepcopy(used)
+            count = 0
+            for y in range(x + nums[0] + 1):
+                if (x <= y and count < nums[0]):
+                    used1.append(1)
+                    count += 1
+                else:
+                    used1.append(0)
+            tmp = get_sat_tuples(space - nums[0] - x - 1, nums[1:], used1)
+            for z in tmp:
+                ret.append(z)
+        return ret
 
+# if __name__ == "__main__":
+#     if (len(sys.argv) != 2):
+#         print("Usage: python3 nonogram_csp <filename>")
+#         sys.exit()
 
-def get_sat_tuple_help(space, num, index):
-    sat = []
-    count = 0
-    for i in range(space):
-        if (count == num):
-            sat.append(0)
-        else:
-            if (i >= index):
-                sat.append(1)
-                count += 1
-            else:
-                sat.append(0)
-    return sat
-
-if __name__ == "__main__":
-    if (len(sys.argv) != 2):
-        print("Usage: python3 nonogram_csp <filename>")
-        sys.exit()
-
-    nonogram_name = sys.argv[1]
-    nonogram_parse(nonogram_name)
+#     nonogram_name = sys.argv[1]
+#     nonogram_parse(nonogram_name)
