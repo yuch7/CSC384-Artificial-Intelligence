@@ -1,0 +1,100 @@
+\documentclass[titlepage]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+
+
+\usepackage[a4paper, total={7in, 10in}]{geometry}
+
+
+\title{Solving a Nonogram Game Using Artificial Intelligence \\ \small Using Constraint Specified Problems to Determine Game Solutions.  }
+\author{Abrar Hussain c3hussaj \\ Matt Kim g5kimmat \\ Yu-Ching Chen }
+\date{December 6, 2015}
+\begin{document}
+\maketitle
+
+\section{Problem Specification}
+
+Nonogram, also known as Picross, which is a logic puzzles in which cells in a grid must be colored or left blank according to the numbers at the sides of the grid to reveal a hidden picture. In this puzzle, the numbers measure how many unbroken lines of filled-in squares there are in any given row or column. For example, a clue of "3 2 4" would mean that there are sets of three, two, and four filled squares (in that order), with at least one blank square between each successive group. The images produced are often black-and-white on the grid structure and aren't limited to square layouts. The following is a simple Nonogram with its solution:
+
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=90mm]{nonogram.jpg}
+\caption{Example Nonogram \label{overflow}}
+\end{figure}
+
+Here, we can see that the problem is specified as a 10x10 Nonogram (based on the number of rows and columns in the grid). Alongside the left side of the grid, we have the specification for each row. Alongside the top of the grid, we have the specification for each column. The specifications for all of the rows and columns are met to form an image of a camel with the sun shining on top. Although Nonograms are generally meant to be solved by humans (and produce relevant images), the complexity of a Nonogram can increase with specifications that do not produce some aesthetic results.
+
+\section{Problem Approach}
+The problem of solving a Nonogram can be reduced to a similar Constraint Specification Problem. Here, we see that each row and column has some constraints due to it's specification. Therefore, we can specify constraints at the level of each row or column. At a higher level, for each row or column, we have that:
+
+\begin{enumerate}
+\item A number n means that n squares must be filled in a group.
+\item For each number group, there must be one or more empty squares between the number group and its adjacent number groups.
+\end{enumerate}
+
+Although this restates the original problem, it does help us transition into thinking about this problem in terms of constraints and variables. \\\\
+\textbf{Domain} \\\\
+Each square within the grid would contain it's own variable. Based on the fact that a square can be either empty or colored, this gives way to a binary specification. So, the individual squares' domains are the set {0, 1}, where one specifies that the square is colored, and zero specifies that the square is empty.\\\\
+\textbf{Choosing Constraint Specification Problems} \\\\
+Choosing to reduce the Nonogram problem to a Constraint Specification Problem is an appropriate choice.
+We have already discussed that the specification for each row or column can be reduced to a constraint that we propagate over. The domain choice for each variable is obvious (zero or one). The alternative options for our solution
+approach would be to reduce our problem to search or something involving
+Baye's Nets. \\\\
+A Bayesian network is not an appropriate choice due to the fact
+that the problem doesn't represent a set of random variables and their
+conditional dependencies well in a DAG. While there are relationships that
+exist between the different row and column specifications (such as the
+fact that the sum of row and column numbers equals the number of filled squares in the solution), this would not be enough to come with a DAG that
+can represent this problem well. \\\\
+At the same time, reducing the problem to a search problem would also
+not be an appropriate choice. Although our game of Nonogram could be
+solved by performing DFS on a graph representing the different states of
+a Nonogram, this problem approach would be very slow.
+
+\section{Evaluation of Approach}
+We decided to create a small Python application which can be used for specifying and solving nxm Nonograms to the limit to 9x9. The program starts by allowing users to specify the size and then specification alongside each row or column, and then takes some time to process the results. After processing the solution, we get a small graphical user interface with a nxm grid corresponding to the Nonogram solution. The following is an example:
+
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=60mm]{sample_solution.png}
+\caption{Example Solution \label{overflow}}
+\end{figure}
+
+Here, we can see that the solution would have the matrix form [[0, 1, 0, 1], [1,1, 1, 0], [1, 0, 0, 1]], with each inner matrix corresponding to the rows of the grid. A 1, according to our previously specified domain, indicates the square is colored, which we can see holds in the grid image. \\\\
+
+
+In order to ensure that our solution approach holds for different Nonograms, we decided to create a lot of automated tests to run on various Nonogram arrangements (up to 9x9). Although this is not a proof of correctness, we believe that it would be sufficient display the correctness of the solution. \\\\
+\textbf{Full Test File}\\\\
+When defining a specific Nonogram, we represent it in the form of a text file with the the letter H at the top of the file, followed by the row specifications, and then the letter V and the column specifications. Here's an example Nonogram problem specification:
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=20mm]{sample_input.png}
+\caption{Example Input \label{overflow}}
+\end{figure}
+
+The input from a text file is then parsed to generate a tuple of lists, with the first list containing the row specifications, and the second list containing the column specifications. From this intermediate representation we go on to create the Nonogram CSP Model, which returns to us the Constraint Model as well as the Variable array representing the problem. This process is similar to what was done for solving Sudoku as a constraint specification problem. Similarly to what was done in Sudoku, we create a solver in the form of a BT class for our csp, and then perform \verb|bt_search| using one of our available propagators (\verb|prop_BT|, \verb|prop_FC|, or \verb|prop_GAC|).
+
+
+\section{Conclusion}
+We can conclude that our Nonogram game problem can be solved by representing the problem as a constraint specification problem.
+
+  \begin{thebibliography}{1}
+
+  \bibitem{notes} John W. Dower {\em Readings compiled for History
+  21.479.}  1991.
+
+  \bibitem{impj}  The Japan Reader {\em Imperial Japan 1800-1945} 1973:
+  Random House, N.Y.
+
+  \bibitem{norman} E. H. Norman {\em Japan's emergence as a modern
+  state} 1940: International Secretariat, Institute of Pacific
+  Relations.
+
+  \bibitem{fo} Bob Tadashi Wakabayashi {\em Anti-Foreignism and Western
+  Learning in Early-Modern Japan} 1986: Harvard University Press.
+
+  \end{thebibliography}
+\end{document}
