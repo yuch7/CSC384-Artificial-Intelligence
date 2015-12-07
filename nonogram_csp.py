@@ -68,16 +68,6 @@ def nonogram_parse(filename):
 
     return (rows, columns)
 
-if __name__ == "__main__":
-    if (len(sys.argv) != 2):
-        print("Usage: python3 nonogram_csp <filename>")
-        sys.exit()
-
-    nonogram_name = sys.argv[1]
-    nonogram_parse(nonogram_name)
-    # TODO: solve
-
-
 def get_sat_tuples(space, num):
     sat = []
     if (space == num):
@@ -103,3 +93,12 @@ def get_sat_tuple_help(space, num, index):
             else:
                 sat.append(0)
     return sat
+
+if __name__ == "__main__":
+    if (len(sys.argv) != 2):
+        print("Usage: python3 nonogram_csp <filename>")
+        sys.exit()
+
+    nonogram_name = sys.argv[1]
+    nonogram_parse(nonogram_name)
+    # TODO: solve
