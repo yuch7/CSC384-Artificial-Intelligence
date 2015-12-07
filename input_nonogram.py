@@ -20,7 +20,10 @@ def extract_nonogram_info(entries):
     if n_columns != len(column_constraints):
         messagebox.showinfo("Error", "# of columns doesn't match input.")
 
+    # create the nonogram file and then parse and process it
     create_nonogram_file(row_constraints, column_constraints, file_name)
+    nonogram = nonogram_parse(file_name)
+    solve_nonogram(nonogram)
 
 
 def create_nonogram_file(row_constraints, column_constraints,
