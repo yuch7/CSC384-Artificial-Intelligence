@@ -14,7 +14,7 @@ def nonogram_csp_model(c):
     for i in range(len(c[0])):
         board.append([])
         for j in range(len(c[1])):
-            board.append([])
+            board[i].append([])
             newvar = Variable("{}{}".format(i, j), [0, 1])
             board[i][j] = newvar
             lscp.append(newvar)
