@@ -21,7 +21,6 @@ def nonogram_csp_model(initial_board):
             lcsp.append(newvar)
 
     nonogram_csp = CSP("Nonogram", lcsp)
-    print(board)
 
     for i in range(len(initial_board[0])):
         for j in range(len(initial_board[0][i])):
@@ -33,6 +32,8 @@ def nonogram_csp_model(initial_board):
             else:
                 var = board[i][l:-r]
             sat_tuples = get_sat_tuples(len(var), initial_board[0][i][j])
+            # print(var)
+            # print(sat_tuples)
             c = Constraint("row{} consecutive: {}".format(i, initial_board[0][i][j]), var)
             c.add_satisfying_tuples(sat_tuples)
             nonogram_csp.add_constraint(c)
@@ -47,13 +48,13 @@ def nonogram_csp_model(initial_board):
             else:    
                 var = [ w[i] for w in board[l:-r] ]
             sat_tuples = get_sat_tuples(len(var), initial_board[1][i][j])
+            # print(var)
+            # print(sat_tuples)
             c = Constraint("col{} consecutive: {}".format(i, initial_board[1][i][j]), var)
             c.add_satisfying_tuples(sat_tuples)
-            print(var)
-            print(sat_tuples)
             nonogram_csp.add_constraint(c)
 
-    
+
     return nonogram_csp, board
 
 
