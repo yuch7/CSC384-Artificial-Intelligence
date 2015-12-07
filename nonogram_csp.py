@@ -9,6 +9,9 @@ def nonogram_csp_model(c):
 
     nonogram_csp, variable_array
     """
+
+    print(c[0])
+    print(c[1])
     lcsp = []
     board = []
     for i in range(len(c[0])):
