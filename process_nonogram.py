@@ -3,7 +3,7 @@ from nonogram_csp import *
 from display_nonogram import *
 
 
-def solve_nonogram(nono):
+def solve_nonogram(nono, display):
     """
     Take a Nonograph input and generate a model based on the info.
     Then,use backtracking search to solve the CSP. Display the solution
@@ -17,11 +17,14 @@ def solve_nonogram(nono):
     print("=======================================================")
     print("GAC")
     solver.bt_search(prop_GAC)
-    print("Solution")
-    print_nonogram_soln(var_array)
-
     board = extract_list(var_array)
-    display_board(board)
+
+    if(display):
+        print("Solution")
+        print_nonogram_soln(var_array)
+        display_board(board)
+
+    return board
 
 
 def print_nonogram_soln(var_array):
