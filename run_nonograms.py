@@ -1,7 +1,7 @@
 from process_nonogram import *
 
 
-def test_nonograms(test_file):
+def run_nonograms(test_file):
     """
     Takes a file containing the name of a nonogram files
     per line, and then creates and solves instances of those
@@ -20,4 +20,4 @@ def test_nonograms(test_file):
 if __name__ == "__main__":
 
     test_file = "full_test.txt"
-    test_nonograms(test_file)
+    run_nonograms(test_file)
