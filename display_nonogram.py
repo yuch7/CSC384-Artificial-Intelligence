@@ -1,60 +1,71 @@
 from tkinter import Tk, Canvas
 
 
-class NonogramDisplay(Tk):
-
+def create_board_canvas(board):
     """
-    Class used to create instance of a visual nonogram. The class
-    creates a new Window and populates a grid with black or white
-    squares depending on a nanogram solution.
+    Create a Tkinter Canvas for displaying a Nogogram solution.
+    Return an instance of Tk filled as a grid.
+
+    board: list of lists of {0, 1}
     """
 
+    canvas = Tk()
     LARGER_SIZE = 600
 
-    def __init__(self, board, *args, **kwargs):
+    # dynamically set the size of each square based on cols and rows
+    n_columns = len(board[0])
+    n_rows = len(board)
 
-        Tk.__init__(self, *args, **kwargs)
+    divide = max(n_columns, n_rows)
+    max_size = LARGER_SIZE / divide
+    canvas_width = max_size * n_columns
+    canvas_height = max_size * n_rows
 
-        # dynamically set the size of each square based on cols and rows
-        n_columns = len(board[0])
-        n_rows = len(board)
+    # create the intiial canvas with rows and columns grid
+    canvas.canvas = Canvas(
+        canvas, width=canvas_width, height=canvas_height,
+        borderwidth=0, highlightthickness=0)
+    canvas.title("Nonogram Display")
+    canvas.canvas.pack(side="top", fill="both", expand="true")
 
-        divide = max(n_columns, n_rows)
-        max_size = self.LARGER_SIZE / divide
-        canvas_width = max_size * n_columns
-        canvas_height = max_size * n_rows
+    canvas.rows = len(board)
+    canvas.columns = len(board[0])
+    canvas.cell_width = max_size
+    canvas.cell_height = max_size
 
-        # create the intiial canvas with rows and columns grid
-        self.canvas = Canvas(
-            self, width=canvas_width, height=canvas_height,
-            borderwidth=0, highlightthickness=0)
-        self.title("Nonogram Display")
-        self.canvas.pack(side="top", fill="both", expand="true")
+    canvas.rect = {}
+    canvas.oval = {}
 
-        self.rows = len(board)
-        self.columns = len(board[0])
-        self.cell_width = max_size
-        self.cell_height = max_size
+    insert_canvas_grid(canvas, board)
 
-        self.rect = {}
-        self.oval = {}
+    return canvas
 
-        # generate the visual board by iterating over board
-        for column in range(len(board[0])):
-            for row in range(len(board)):
 
-                x1 = column * self.cell_width
-                y1 = row * self.cell_height
-                x2 = x1 + self.cell_width
-                y2 = y1 + self.cell_height
+def insert_canvas_grid(canvas, board):
+    """
+    Insert black and white squares onto a canvas depending on the
+    values inside of the board. A value of 1 corresponds to a black
+    square, while a value of 0 corresponds to a white squre.
 
-                # set the tile to black if it's a solution tile
-                if board[row][column] == 1:
-                    self.rect[row, column] = self.canvas.create_rectangle(
-                        x1, y1, x2, y2, fill="black")
-                else:
-                    self.rect[row, column] = self.canvas.create_rectangle(
-                        x1, y1, x2, y2, fill="white")
+    canvas: Tk object
+    board: list of lists of {0, 1}
+    """
+    # generate the visual board by iterating over board
+    for column in range(len(board[0])):
+        for row in range(len(board)):
+
+            x1 = column * canvas.cell_width
+            y1 = row * canvas.cell_height
+            x2 = x1 + canvas.cell_width
+            y2 = y1 + canvas.cell_height
+
+            # set the tile to black if it's a solution tile
+            if board[row][column] == 1:
+                canvas.rect[row, column] = canvas.canvas.create_rectangle(
+                    x1, y1, x2, y2, fill="black")
+            else:
+                canvas.rect[row, column] = canvas.canvas.create_rectangle(
+                    x1, y1, x2, y2, fill="white")
 
 
 def display_board(board):
@@ -72,5 +83,5 @@ def display_board(board):
                        [1, 0, 0]])
 
     """
-    app = NonogramDisplay(board)
+    app = create_board_canvas(board)
     app.mainloop()
